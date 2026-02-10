@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>River Bend - Design IAP Schedule</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            padding: 20px;
+        }
+
+        .container { max-width: 1600px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle { color: #94a3b8; font-size: 0.95rem; }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .info-card label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #60a5fa;
+            margin-top: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #e4e4e7;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: #60a5fa;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .rag-legend {
+            display: flex;
+            gap: 20px;
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .rag-legend-title { font-size: 0.8rem; color: #94a3b8; font-weight: 500; }
+
+        .rag-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+
+        .rag-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .rag-dot.red { background: #ef4444; }
+        .rag-dot.amber { background: #f59e0b; }
+        .rag-dot.green { background: #22c55e; }
+        .rag-dot.none { background: #64748b; }
+
+        .gantt-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .gantt-header {
+            display: grid;
+            grid-template-columns: 50px 320px 1fr;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .rag-header, .task-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .rag-header { text-align: center; padding: 12px 8px; }
+
+        .timeline-header { display: flex; overflow-x: auto; }
+
+        .month-label {
+            min-width: 55px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .month-label.year-start { border-left: 2px solid rgba(255,255,255,0.2); }
+
+        .gantt-body { max-height: 70vh; overflow-y: auto; overflow-x: hidden; }
+
+        .gantt-row {
+            display: grid;
+            grid-template-columns: 50px 320px 1fr;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+
+        .gantt-row:hover { background: rgba(255,255,255,0.03); }
+
+        .gantt-row.phase-header { background: rgba(59, 130, 246, 0.1); }
+        .gantt-row.phase-header .task-name { font-weight: 700; color: #60a5fa; }
+
+        .rag-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+
+        .rag-indicator {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.2s;
+        }
+
+        .rag-indicator:hover { transform: scale(1.2); }
+        .rag-indicator.red { background: #ef4444; border-color: #ef4444; }
+        .rag-indicator.amber { background: #f59e0b; border-color: #f59e0b; }
+        .rag-indicator.green { background: #22c55e; border-color: #22c55e; }
+        .rag-indicator.none { background: transparent; }
+
+        .task-cell {
+            padding: 10px 16px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .task-cell:hover { background: rgba(255,255,255,0.02); }
+
+        .task-name {
+            font-size: 0.82rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .task-indent-1 { padding-left: 32px; }
+        .task-indent-2 { padding-left: 48px; }
+
+        .task-duration { font-size: 0.7rem; color: #64748b; white-space: nowrap; }
+
+        .has-comment { color: #60a5fa; font-size: 12px; }
+
+        .timeline-cell {
+            position: relative;
+            height: 38px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bar {
+            position: absolute;
+            height: 22px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .bar:hover {
+            transform: scaleY(1.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+
+        .bar.design { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+        .bar.procurement { background: linear-gradient(90deg, #6366f1, #818cf8); }
+        .bar.substation { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .bar.sitework { background: linear-gradient(90deg, #14b8a6, #2dd4bf); }
+        .bar.construction { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .bar.vertiv { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+        .bar.commissioning { background: linear-gradient(90deg, #ec4899, #f472b6); }
+        .bar.power { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .bar.milestone { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+
+        .milestone-marker {
+            position: absolute;
+            width: 0; height: 0;
+            border-left: 9px solid transparent;
+            border-right: 9px solid transparent;
+            border-bottom: 14px solid #fbbf24;
+            transform: translateX(-9px);
+            cursor: pointer;
+        }
+
+        .milestone-marker.completed { border-bottom-color: #22c55e; }
+
+        .grid-lines {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            pointer-events: none;
+        }
+
+        .grid-line {
+            min-width: 55px;
+            border-right: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .grid-line.year-start { border-right: 2px solid rgba(255,255,255,0.1); }
+
+        .today-line {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: #ef4444;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 320px;
+        }
+
+        .tooltip.visible { opacity: 1; }
+        .tooltip-title { font-weight: 600; margin-bottom: 8px; color: #60a5fa; }
+        .tooltip-row { display: flex; justify-content: space-between; margin-bottom: 4px; gap: 16px; }
+        .tooltip-label { color: #94a3b8; }
+
+        .complete { color: #4ade80; }
+        .high { color: #60a5fa; }
+        .medium { color: #fbbf24; }
+        .low { color: #f87171; }
+        .not-started { color: #94a3b8; }
+
+        .progress-fill-complete { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .progress-fill-high { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .progress-fill-medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .progress-fill-low { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .progress-fill-not-started { background: rgba(255,255,255,0.2); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            min-width: 450px;
+            max-width: 90%;
+        }
+
+        .modal h3 { font-size: 1.2rem; margin-bottom: 20px; color: #f1f5f9; }
+        .modal .input-group { margin-bottom: 15px; }
+
+        .modal .input-group label {
+            display: block; font-size: 0.8rem; color: #94a3b8;
+            margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .modal input, .modal textarea, .modal select {
+            width: 100%; padding: 12px 16px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: #f1f5f9;
+            font-size: 1rem; font-family: inherit;
+        }
+
+        .modal textarea { min-height: 100px; resize: vertical; }
+
+        .modal input:focus, .modal textarea:focus, .modal select:focus {
+            outline: none; border-color: #60a5fa;
+        }
+
+        .rag-select-group { display: flex; gap: 10px; }
+
+        .rag-option {
+            flex: 1; padding: 12px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 8px; text-align: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+
+        .rag-option:hover { border-color: rgba(255,255,255,0.3); }
+        .rag-option.selected { border-width: 3px; }
+        .rag-option.red { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .rag-option.red.selected { background: rgba(239, 68, 68, 0.2); }
+        .rag-option.amber { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .rag-option.amber.selected { background: rgba(245, 158, 11, 0.2); }
+        .rag-option.green { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+        .rag-option.green.selected { background: rgba(34, 197, 94, 0.2); }
+        .rag-option.none { border-color: #64748b; background: rgba(100, 116, 139, 0.1); }
+        .rag-option.none.selected { background: rgba(100, 116, 139, 0.2); }
+
+        .rag-option-dot { width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 8px; }
+        .rag-option.red .rag-option-dot { background: #ef4444; }
+        .rag-option.amber .rag-option-dot { background: #f59e0b; }
+        .rag-option.green .rag-option-dot { background: #22c55e; }
+        .rag-option.none .rag-option-dot { background: #64748b; }
+
+        .rag-option-label { font-size: 0.75rem; color: #94a3b8; }
+
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px; }
+
+        .modal button {
+            padding: 10px 20px; border-radius: 8px; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.2s;
+        }
+
+        .modal .btn-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; }
+        .modal .btn-save { background: #3b82f6; border: none; color: white; }
+        .modal .btn-save:hover { background: #2563eb; }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .summary-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .summary-title {
+            font-size: 1rem; font-weight: 600;
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .summary-item:last-child { border-bottom: none; }
+        .summary-item span:first-child { font-size: 0.9rem; color: #e2e8f0; }
+        .summary-date { font-size: 0.8rem; color: #64748b; }
+
+        @media (max-width: 768px) {
+            .gantt-header, .gantt-row { grid-template-columns: 40px 200px 1fr; }
+            .modal { min-width: 90%; }
+            .summary-section { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>River Bend - Design IAP Schedule</h1>
+            <p class="subtitle">HUT 8 Data Center (Vertiv) | Jacobs Engineering | Oct 2025 - Sep 2027</p>
+
+            <div class="project-info">
+                <div class="info-card">
+                    <label>Schedule Status</label>
+                    <div class="value">Preliminary</div>
+                </div>
+                <div class="info-card">
+                    <label>Data Halls</label>
+                    <div class="value">4 Halls</div>
+                </div>
+                <div class="info-card">
+                    <label>Total Duration</label>
+                    <div class="value">501 Days</div>
+                </div>
+                <div class="info-card">
+                    <label>Project Start</label>
+                    <div class="value">10 Oct 2025</div>
+                </div>
+                <div class="info-card">
+                    <label>Project End</label>
+                    <div class="value">30 Sep 2027</div>
+                </div>
+                <div class="info-card">
+                    <label>Target Power</label>
+                    <div class="value">330 MW</div>
+                </div>
+                <div class="info-card">
+                    <label>Data Date</label>
+                    <div class="value">10 Dec 2025</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button class="filter-btn active" data-filter="all">All Phases</button>
+            <button class="filter-btn" data-filter="milestones">Milestones</button>
+            <button class="filter-btn" data-filter="design">Design</button>
+            <button class="filter-btn" data-filter="procurement">Procurement</button>
+            <button class="filter-btn" data-filter="construction">Construction</button>
+            <button class="filter-btn" data-filter="power">Power</button>
+        </div>
+
+        <div class="rag-legend">
+            <span class="rag-legend-title">RAG Status:</span>
+            <div class="rag-item"><div class="rag-dot red"></div> Red - At Risk</div>
+            <div class="rag-item"><div class="rag-dot amber"></div> Amber - Caution</div>
+            <div class="rag-item"><div class="rag-dot green"></div> Green - On Track</div>
+            <div class="rag-item"><div class="rag-dot none"></div> Not Set</div>
+            <span style="margin-left: auto; font-size: 0.75rem; color: #64748b;">Click task name or RAG to add comments</span>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>Design</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #6366f1, #818cf8);"></div>Procurement</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>Substation</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #14b8a6, #2dd4bf);"></div>Site Work</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>Construction</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #0ea5e9, #38bdf8);"></div>Vertiv</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #ec4899, #f472b6);"></div>Commissioning</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #22c55e, #4ade80);"></div>Power</div>
+            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #fbbf24;display:inline-block;"></div>Milestone</div>
+            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #22c55e;display:inline-block;"></div>Complete</div>
+        </div>
+
+        <div class="gantt-container">
+            <div class="gantt-header">
+                <div class="rag-header">RAG</div>
+                <div class="task-header">Task Name</div>
+                <div class="timeline-header" id="timeline-header"></div>
+            </div>
+            <div class="gantt-body" id="gantt-body"></div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="summary-card">
+                <h3 class="summary-title" style="color: #22c55e;">Permanent Power Staging</h3>
+                <div class="summary-item"><span>50 MW</span><span class="summary-date">Jul 06, 2026</span></div>
+                <div class="summary-item"><span>100 MW</span><span class="summary-date">Aug 03, 2026</span></div>
+                <div class="summary-item"><span>150 MW</span><span class="summary-date">Sep 08, 2026</span></div>
+                <div class="summary-item"><span>200 MW</span><span class="summary-date">Oct 05, 2026</span></div>
+                <div class="summary-item"><span>250 MW</span><span class="summary-date">Nov 02, 2026</span></div>
+                <div class="summary-item"><span>330 MW</span><span class="summary-date">Dec 01, 2026</span></div>
+            </div>
+
+            <div class="summary-card">
+                <h3 class="summary-title" style="color: #60a5fa;">Key Milestones</h3>
+                <div class="summary-item"><span>&#10003; Limited NTP</span><span class="summary-date">Oct 16, 2025</span></div>
+                <div class="summary-item"><span>&#10003; Design Build Agreement</span><span class="summary-date">Dec 16, 2025</span></div>
+                <div class="summary-item"><span>MOB to Site</span><span class="summary-date">Feb 02, 2026</span></div>
+                <div class="summary-item"><span>Begin Construction</span><span class="summary-date">Feb 10, 2026</span></div>
+                <div class="summary-item"><span>3D Model Frozen</span><span class="summary-date">Mar 24, 2026</span></div>
+                <div class="summary-item"><span>Engineering IFC</span><span class="summary-date">Jul 02, 2026</span></div>
+                <div class="summary-item"><span>Project Completion</span><span class="summary-date">Sep 30, 2027</span></div>
+            </div>
+
+            <div class="summary-card">
+                <h3 class="summary-title" style="color: #a78bfa;">Vertiv Design Milestones</h3>
+                <div class="summary-item"><span>BOD Set Submittal</span><span class="summary-date">Jan 12, 2026</span></div>
+                <div class="summary-item"><span>fGMP Proposal</span><span class="summary-date">Mar 02, 2026</span></div>
+                <div class="summary-item"><span>DD Set Submittal</span><span class="summary-date">Mar 16, 2026</span></div>
+                <div class="summary-item"><span>CD Set Submittal</span><span class="summary-date">May 11, 2026</span></div>
+                <div class="summary-item"><span>Start Up Complete</span><span class="summary-date">May 18, 2026</span></div>
+                <div class="summary-item"><span>Installation Complete</span><span class="summary-date">Jul 06, 2026</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title"></div>
+        <div class="tooltip-content"></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3 id="modal-title">Edit Task</h3>
+            <div class="input-group">
+                <label>RAG Status</label>
+                <div class="rag-select-group">
+                    <div class="rag-option red" data-rag="red" onclick="selectRag('red')">
+                        <div class="rag-option-dot"></div>
+                        <div class="rag-option-label">Red</div>
+                    </div>
+                    <div class="rag-option amber" data-rag="amber" onclick="selectRag('amber')">
+                        <div class="rag-option-dot"></div>
+                        <div class="rag-option-label">Amber</div>
+                    </div>
+                    <div class="rag-option green" data-rag="green" onclick="selectRag('green')">
+                        <div class="rag-option-dot"></div>
+                        <div class="rag-option-label">Green</div>
+                    </div>
+                    <div class="rag-option none" data-rag="none" onclick="selectRag('none')">
+                        <div class="rag-option-dot"></div>
+                        <div class="rag-option-label">None</div>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Comments / Notes</label>
+                <textarea id="modal-comment" placeholder="Add notes about this task status..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="saveTask()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var monthWidth = 55;
+        var totalMonths = 25;
+        var currentTaskId = null;
+        var selectedRag = 'none';
+        var taskData = {};
+        var todayOffset = 3.32;
+
+        var tasks = [
+            // ===== MILESTONES - PROJECT =====
+            { id: 'ms_proj', name: 'MILESTONES - PROJECT', phase: 'milestones', isPhase: true },
+            { id: 'ms_p1', name: 'Master Site Planning FROZEN', start: 1.7, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Nov 21, 2025', pctComplete: 100 },
+            { id: 'ms_p2', name: 'Architectural Office Programming Complete', start: 1.7, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Nov 21, 2025', pctComplete: 100 },
+            { id: 'ms_p3', name: 'Architectural Office Programming Update', start: 3.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jan 16, 2026', pctComplete: 0 },
+            { id: 'ms_p4', name: '3D MODEL FROZEN (BOD Layout)', start: 5.8, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 24, 2026', pctComplete: 0 },
+
+            // ===== MILESTONES - JACOBS =====
+            { id: 'ms_jac', name: 'MILESTONES - JACOBS', phase: 'milestones', isPhase: true },
+            { id: 'ms_j1', name: 'Award Vertiv iGMP PO', start: 2.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Dec 17, 2025', pctComplete: 100 },
+            { id: 'ms_j2', name: 'Interactive Schedule Workshop w/Vertiv & HUT8', start: 2.2, duration: 0.3, type: 'vertiv', phase: 'milestones', indent: 1, date: 'Dec 16-19, 2025', pctComplete: 100 },
+            { id: 'ms_j3', name: 'Interactive Design Workshop W-MEC/ELE & CSA', start: 3.2, duration: 0.15, type: 'design', phase: 'milestones', indent: 1, date: 'Jan 07-08, 2026', pctComplete: 0 },
+            { id: 'ms_j4', name: 'Master Site Planning FROZEN (Fluid Stack)', start: 3.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jan 16, 2026', pctComplete: 0 },
+            { id: 'ms_j5', name: 'MOB to Site', start: 4.1, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Feb 02, 2026', pctComplete: 0 },
+            { id: 'ms_j6', name: 'Develop MTO (Model & Manual)', start: 4.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Feb 05, 2026', pctComplete: 0 },
+            { id: 'ms_j7', name: 'Prepare TIC Cost Estimate', start: 4.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Feb 05, 2026', pctComplete: 0 },
+            { id: 'ms_j8', name: 'TIC Cost Estimate Complete', start: 5.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 05, 2026', pctComplete: 0 },
+            { id: 'ms_j9', name: 'TIC Cost Estimate Mgmt Review w/ HUT8', start: 5.4, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 12, 2026', pctComplete: 0 },
+            { id: 'ms_j10', name: 'fGMP Proposal', start: 5.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 16, 2026', pctComplete: 0 },
+            { id: 'ms_j11', name: 'Engineering 50% Complete', start: 5.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 16, 2026', pctComplete: 0 },
+            { id: 'ms_j12', name: 'Engineering 90% Complete', start: 7.4, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'May 11, 2026', pctComplete: 0 },
+            { id: 'ms_j13', name: 'Engineering IFC Complete', start: 9.1, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jul 02, 2026', pctComplete: 0 },
+            { id: 'ms_j14', name: 'JACOBS DEMOB', start: 23, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Sep 30, 2027', pctComplete: 0 },
+
+            // ===== MILESTONES - HUT 8 =====
+            { id: 'ms_h8', name: 'MILESTONES - HUT 8', phase: 'milestones', isPhase: true },
+            { id: 'ms_h1', name: 'Data Hall RFP', start: 0, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Oct 10, 2025', pctComplete: 100 },
+            { id: 'ms_h2', name: 'Data Hall Limited NTP', start: 0.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Oct 16, 2025', pctComplete: 100 },
+            { id: 'ms_h3', name: 'Data Hall RFP Proposal', start: 0.7, duration: 0.8, type: 'construction', phase: 'milestones', indent: 1, date: 'Oct 31 - Nov 25, 2025', pctComplete: 100 },
+            { id: 'ms_h4', name: 'Data Hall Design Build Agreement', start: 2.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Dec 16, 2025', pctComplete: 100 },
+            { id: 'ms_h5', name: 'Data Hall Begin Construction', start: 4.3, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Feb 10, 2026', pctComplete: 0 },
+            { id: 'ms_h6', name: 'Substation Transformer Fdn Ready', start: 4.9, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 02, 2026', pctComplete: 0 },
+            { id: 'ms_h7', name: 'Data Hall Project Completion - Handover', start: 23, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Sep 30, 2027', pctComplete: 0 },
+
+            // ===== MILESTONES - VERTIV =====
+            { id: 'ms_vtv', name: 'MILESTONES - VERTIV', phase: 'milestones', isPhase: true },
+            { id: 'ms_v1', name: 'BOD Set Submittal', start: 3.4, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jan 12, 2026', pctComplete: 0 },
+            { id: 'ms_v2', name: 'fGMP Proposal (Vertiv)', start: 4.9, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 02, 2026', pctComplete: 0 },
+            { id: 'ms_v3', name: 'DD Set Submittal', start: 5.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 16, 2026', pctComplete: 0 },
+            { id: 'ms_v4', name: 'DD Set Review', start: 5.5, duration: 0.3, type: 'vertiv', phase: 'milestones', indent: 1, date: 'Mar 16-24, 2026', pctComplete: 0 },
+            { id: 'ms_v5', name: 'CD Set Submittal', start: 7.4, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'May 11, 2026', pctComplete: 0 },
+            { id: 'ms_v6', name: 'CD Set Review', start: 7.4, duration: 0.25, type: 'vertiv', phase: 'milestones', indent: 1, date: 'May 11-18, 2026', pctComplete: 0 },
+            { id: 'ms_v7', name: 'Start Up Complete', start: 7.6, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'May 18, 2026', pctComplete: 0 },
+            { id: 'ms_v8', name: 'Installation Complete', start: 9.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jul 06, 2026', pctComplete: 0 },
+
+            // ===== MILESTONES - CONSTRUCTION =====
+            { id: 'ms_con', name: 'MILESTONES - CONSTRUCTION', phase: 'milestones', isPhase: true },
+            { id: 'ms_c1', name: 'DC Pad Topsoil Stripping & Stabilization', start: 3.5, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Jan 16, 2026', pctComplete: 0 },
+            { id: 'ms_c2', name: 'Test Pile Program Complete', start: 4.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Feb 06, 2026', pctComplete: 0 },
+            { id: 'ms_c3', name: 'Stone Pad Turnover - DC Bldg', start: 5.2, duration: 0.5, type: 'milestone', phase: 'milestones', indent: 1, isMilestone: true, date: 'Mar 06, 2026', pctComplete: 0 },
+
+            // ===== PERMANENT POWER =====
+            { id: 'pwr_ph', name: 'PERMANENT POWER STAGING', phase: 'power', isPhase: true },
+            { id: 'pwr1', name: 'Permanent Power - 50MW', start: 9.2, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Jul 06, 2026', pctComplete: 0 },
+            { id: 'pwr2', name: 'Permanent Power - 100MW', start: 10.1, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Aug 03, 2026', pctComplete: 0 },
+            { id: 'pwr3', name: 'Permanent Power - 150MW', start: 11.3, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Sep 08, 2026', pctComplete: 0 },
+            { id: 'pwr4', name: 'Permanent Power - 200MW', start: 12.2, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Oct 05, 2026', pctComplete: 0 },
+            { id: 'pwr5', name: 'Permanent Power - 250MW', start: 13.1, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Nov 02, 2026', pctComplete: 0 },
+            { id: 'pwr6', name: 'Permanent Power - 330MW', start: 14, duration: 0.5, type: 'milestone', phase: 'power', indent: 1, isMilestone: true, date: 'Dec 01, 2026', pctComplete: 0 },
+
+            // ===== DESIGN REQUIREMENTS =====
+            { id: 'd_req', name: 'DESIGN REQUIREMENTS', phase: 'design', isPhase: true },
+            { id: 'd_r1', name: 'Preliminary Basis of Design', start: 0.2, duration: 1, type: 'design', phase: 'design', indent: 1, pctComplete: 100 },
+            { id: 'd_r2', name: 'Civil Basis of Design', start: 0.5, duration: 0.2, type: 'design', phase: 'design', indent: 1, pctComplete: 100 },
+            { id: 'd_r3', name: 'IFB Unit-Rate Test Piling Bid Package', start: 0.7, duration: 0.7, type: 'design', phase: 'design', indent: 1, pctComplete: 100 },
+            { id: 'd_r4', name: 'Arch LS & Egress / Code Study', start: 0.7, duration: 2.8, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_r5', name: 'DC Materials of Construction Confirmed', start: 1.6, duration: 0.5, type: 'milestone', phase: 'design', indent: 1, isMilestone: true, date: 'Nov 19, 2025', pctComplete: 100 },
+
+            // ===== DESIGN - CIVIL =====
+            { id: 'd_civ', name: 'DESIGN - CIVIL', phase: 'design', isPhase: true },
+            { id: 'd_c1', name: 'Early Works Civil Rough Grading', start: 2, duration: 2.4, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_c2', name: 'Site Civil Underground & Infrastructure', start: 4.3, duration: 1.8, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_c3', name: 'Civil Final Grading & Paving', start: 5.8, duration: 1.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - STRUCTURAL =====
+            { id: 'd_str', name: 'DESIGN - STRUCTURAL', phase: 'design', isPhase: true },
+            { id: 'd_s1', name: 'General Specs / Notes / Details', start: 0.7, duration: 3.3, type: 'design', phase: 'design', indent: 1, pctComplete: 10 },
+            { id: 'd_s2', name: 'Steel Bldg - Admin, Core & DH1', start: 2.7, duration: 1.3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s3', name: 'Steel Bldg - DH 2-4', start: 3.8, duration: 1.1, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s4', name: 'Building Piling', start: 0.7, duration: 3.9, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_s5', name: 'Building Foundation', start: 2, duration: 2.8, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_s6', name: 'Ext Trestle Piling', start: 3, duration: 1.8, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s7', name: 'Ext Trestle Steel & Concrete', start: 3, duration: 2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s8', name: 'Yard Concrete / Ext Slab on Grade', start: 3.6, duration: 1.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s9', name: 'Building Slab on Grade', start: 3.6, duration: 1.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s10', name: 'Ext Pre Cast Siding', start: 6.7, duration: 1.3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_s11', name: 'Int Walls / Misc Steel', start: 6.2, duration: 3.2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - ARCHITECTURAL =====
+            { id: 'd_arch', name: 'DESIGN - ARCHITECTURAL', phase: 'design', isPhase: true },
+            { id: 'd_a1', name: 'Core and Shell', start: 3.4, duration: 2.5, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_a2', name: 'Permitting Drawings', start: 5.3, duration: 3.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_a3', name: 'Admin, Core & Data Hall 1', start: 4.5, duration: 3.8, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_a4', name: 'Data Halls 2-4', start: 7.2, duration: 2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - MECHANICAL =====
+            { id: 'd_mech', name: 'DESIGN - MECHANICAL / HVAC', phase: 'design', isPhase: true },
+            { id: 'd_m1', name: 'HVAC Equipment & Specs', start: 5.5, duration: 1.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_m2', name: 'HVAC Airside & Piping', start: 5.5, duration: 1.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_m3', name: 'HVAC Admin/Office', start: 7.2, duration: 2.3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_m4', name: 'Mechanical General Specs', start: 8, duration: 1.5, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - ELECTRICAL =====
+            { id: 'd_elec', name: 'DESIGN - ELECTRICAL', phase: 'design', isPhase: true },
+            { id: 'd_e1', name: 'Site Routing (substa to DC swgr)', start: 2, duration: 3.5, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_e2', name: 'General Specs / Notes / Details', start: 3.6, duration: 5.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_e3', name: 'Long Lead Electrical Equipment', start: 3.4, duration: 3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_e4', name: 'Early Works U/G Utilities', start: 3.6, duration: 3.1, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_e5', name: 'Admin, Data Hall 1', start: 4.8, duration: 4.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_e6', name: 'Site Lighting and Power', start: 6.9, duration: 2.9, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_e7', name: 'Data Halls 2-4', start: 8.3, duration: 2.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - FIRE PROTECTION =====
+            { id: 'd_fp', name: 'DESIGN - FIRE PROTECTION', phase: 'design', isPhase: true },
+            { id: 'd_f1', name: 'FP General Specs', start: 3, duration: 1.4, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_f2', name: 'Fire Water Storage Tank', start: 3.4, duration: 1.8, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_f3', name: 'FP/LS Admin, Core & DH1', start: 3.6, duration: 1.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_f4', name: 'FP/LS Data Hall 2-4', start: 3.9, duration: 1.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - LIFE SAFETY =====
+            { id: 'd_ls', name: 'DESIGN - LIFE SAFETY', phase: 'design', isPhase: true },
+            { id: 'd_l1', name: 'LS Specifications', start: 3.6, duration: 1, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_l2', name: 'LS - Data Hall 1', start: 5, duration: 3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_l3', name: 'LS - Admin & Spine', start: 5.9, duration: 1.7, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_l4', name: 'LS - Data Hall 2-4', start: 7.6, duration: 1.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - TELECOM / ICT =====
+            { id: 'd_ict', name: 'DESIGN - TELECOM / ICT', phase: 'design', isPhase: true },
+            { id: 'd_t1', name: 'Telecom General Specs', start: 2, duration: 3, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_t2', name: 'Underground Duct Bank', start: 4.3, duration: 3.4, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_t3', name: 'Structured Cabling / WiFi / DAS', start: 4.1, duration: 4.3, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_t4', name: 'Network Core & Data Hall 1', start: 7.6, duration: 2.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - SECURITY =====
+            { id: 'd_sec', name: 'DESIGN - SECURITY', phase: 'design', isPhase: true },
+            { id: 'd_sec1', name: 'Security General Specs', start: 2, duration: 3.1, type: 'design', phase: 'design', indent: 1, pctComplete: 5 },
+            { id: 'd_sec2', name: 'Security Exterior', start: 8.3, duration: 3.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_sec3', name: 'Security Interior', start: 8.3, duration: 5, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - BAS / EPMS / BMS =====
+            { id: 'd_bas', name: 'DESIGN - BAS / EPMS / BMS', phase: 'design', isPhase: true },
+            { id: 'd_b1', name: 'EPMS - Admin, Core & DH1', start: 6.2, duration: 2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_b2', name: 'EPMS - Data Hall 2-4', start: 7.9, duration: 2.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_b3', name: 'BAS - Admin, Core & DH1', start: 7.6, duration: 2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_b4', name: 'BAS - Data Hall 2-4', start: 7.9, duration: 2.6, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_b5', name: 'BMS - Admin, Core & DH1', start: 7.6, duration: 2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+            { id: 'd_b6', name: 'BMS - Data Hall 2-4', start: 8.3, duration: 2.2, type: 'design', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== DESIGN - HV SUBSTATION =====
+            { id: 'd_hv', name: 'DESIGN - HV SUBSTATION', phase: 'design', isPhase: true },
+            { id: 'd_hv1', name: 'HV Substation Design', start: 3, duration: 2.4, type: 'substation', phase: 'design', indent: 1, pctComplete: 0 },
+
+            // ===== PROCUREMENT - HUT 8 =====
+            { id: 'pr_h8', name: 'PROCUREMENT - HUT 8 SUPPLIED', phase: 'procurement', isPhase: true },
+            { id: 'pr_1', name: 'Motor Operated Switch 230kV (3 ea)', start: 2, duration: 2.8, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_2', name: 'CAT 3516E Generators (7 ea)', start: 2, duration: 2.8, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_3', name: 'Surge Arresters 34.5kV (36 ea)', start: 2, duration: 2.8, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_4', name: 'Surge Arresters 230kV MPT (9 ea)', start: 2, duration: 3.7, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_5', name: 'Motor Operated Switch 34.5kV (6 ea)', start: 2, duration: 4.7, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_6', name: 'Disconnect Switch 230kV (6 ea)', start: 2, duration: 4.7, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_7', name: 'Disconnect Switch 34.5kV (7 ea)', start: 2, duration: 4.7, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_8', name: 'Circuit Breaker 34.5kV (12 ea)', start: 2, duration: 5.6, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_9', name: 'Circuit Breaker 230kV (3 ea)', start: 2, duration: 5.6, type: 'procurement', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_10', name: 'MPT 132/176/220MVA (2 unit)', start: 2, duration: 2.8, type: 'substation', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pr_11', name: 'MPT 132/176/220MVA (1 unit)', start: 5, duration: 6.5, type: 'substation', phase: 'procurement', indent: 1, pctComplete: 0 },
+
+            // ===== PROCUREMENT - VERTIV =====
+            { id: 'pr_vtv', name: 'PROCUREMENT - VERTIV SUPPLIED', phase: 'procurement', isPhase: true },
+            { id: 'pv_1', name: 'Network Power Skids & UPS (Core)', start: 2, duration: 6.2, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_2', name: 'Network MMR Battery Skids (Core)', start: 2, duration: 7.2, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_3', name: 'IT Power Skids (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_4', name: 'Mechanical Power Skids (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_5', name: 'Buffer Tank Skids (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_6', name: 'Hydro Modules (DH 1-4)', start: 2, duration: 12.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_7', name: 'Battery Skids (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_8', name: 'SmartRun / CDU (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_9', name: 'MV 36kV Ring Main Unit (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_10', name: 'CDU Units (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_11', name: 'Chiller OFC (DH 1-4)', start: 2, duration: 11.5, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_12', name: 'MV 36kV 3.75MVA 480V (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_13', name: 'MV 36kV 3.75MVA 415V (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_14', name: 'Fan Wall Units (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+            { id: 'pv_15', name: 'CW 181 Units (DH 1-4)', start: 2, duration: 13.7, type: 'vertiv', phase: 'procurement', indent: 1, pctComplete: 0 },
+
+            // ===== FACTORY ACCEPTANCE TEST =====
+            { id: 'fat', name: 'FACTORY ACCEPTANCE TEST', phase: 'construction', isPhase: true },
+            { id: 'fat1', name: 'FAT - DH 1 & Core', start: 7.5, duration: 0.5, type: 'milestone', phase: 'construction', indent: 1, isMilestone: true, date: 'May 15, 2026', pctComplete: 0 },
+            { id: 'fat2', name: 'FAT - DH 2', start: 8.8, duration: 0.5, type: 'milestone', phase: 'construction', indent: 1, isMilestone: true, date: 'Jun 26, 2026', pctComplete: 0 },
+            { id: 'fat3', name: 'FAT - DH 3', start: 10.5, duration: 0.5, type: 'milestone', phase: 'construction', indent: 1, isMilestone: true, date: 'Aug 14, 2026', pctComplete: 0 },
+            { id: 'fat4', name: 'FAT - DH 4', start: 11.8, duration: 0.5, type: 'milestone', phase: 'construction', indent: 1, isMilestone: true, date: 'Sep 25, 2026', pctComplete: 0 },
+
+            // ===== CONSTRUCTION =====
+            { id: 'con', name: 'CONSTRUCTION', phase: 'construction', isPhase: true },
+            { id: 'cn1', name: 'Pre-Construction', start: 0, duration: 5.7, type: 'construction', phase: 'construction', indent: 1, pctComplete: 35 },
+            { id: 'cn2', name: 'Construction Procurement', start: 2, duration: 4.7, type: 'procurement', phase: 'construction', indent: 1, pctComplete: 0 },
+            { id: 'cn3', name: 'Contractor Procurement', start: 2, duration: 9.2, type: 'procurement', phase: 'construction', indent: 1, pctComplete: 0 },
+            { id: 'cn4', name: 'Permits', start: 2, duration: 5.8, type: 'sitework', phase: 'construction', indent: 1, pctComplete: 0 },
+            { id: 'cn5', name: 'Construction', start: 2, duration: 21.7, type: 'construction', phase: 'construction', indent: 1, pctComplete: 0 },
+            { id: 'cn6', name: 'Final Commissioning Verified', start: 23, duration: 0.3, type: 'commissioning', phase: 'construction', indent: 1, pctComplete: 0 },
+            { id: 'cn7', name: 'Project Completion', start: 23, duration: 0.5, type: 'milestone', phase: 'construction', indent: 1, isMilestone: true, date: 'Sep 30, 2027', pctComplete: 0 }
+        ];
+
+        function generateMonthLabels() {
+            var header = document.getElementById('timeline-header');
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var mi = 9;
+            var yr = 2025;
+            for (var i = 0; i < totalMonths; i++) {
+                var label = document.createElement('div');
+                var isYS = mi === 0;
+                label.className = 'month-label' + (isYS ? ' year-start' : '');
+                label.textContent = months[mi] + ((isYS || i === 0) ? " '" + yr.toString().slice(-2) : '');
+                header.appendChild(label);
+                mi++;
+                if (mi > 11) { mi = 0; yr++; }
+            }
+        }
+
+        function generateGridLines() {
+            var h = '';
+            var mi = 9;
+            for (var i = 0; i < totalMonths; i++) {
+                h += '<div class="grid-line' + (mi === 0 ? ' year-start' : '') + '"></div>';
+                mi++;
+                if (mi > 11) mi = 0;
+            }
+            return h;
+        }
+
+        function getTaskData(id) {
+            return taskData[id] || { rag: 'none', comment: '' };
+        }
+
+        function renderGantt(filter) {
+            filter = filter || 'all';
+            var body = document.getElementById('gantt-body');
+            var html = '';
+
+            tasks.forEach(function(task) {
+                if (filter !== 'all' && task.phase !== filter) return;
+
+                var indentClass = task.indent ? 'task-indent-' + task.indent : '';
+                var phaseClass = task.isPhase ? 'phase-header' : '';
+                var data = getTaskData(task.id);
+
+                html += '<div class="gantt-row ' + phaseClass + '" data-phase="' + task.phase + '">';
+
+                html += '<div class="rag-cell" onclick="editTask(\'' + task.id + '\',\'' + task.name.replace(/'/g, "\\'") + '\')">';
+                if (!task.isPhase) html += '<div class="rag-indicator ' + data.rag + '"></div>';
+                html += '</div>';
+
+                html += '<div class="task-cell ' + indentClass + '" onclick="editTask(\'' + task.id + '\',\'' + task.name.replace(/'/g, "\\'") + '\')">';
+                html += '<span class="task-name">' + task.name + '</span>';
+                if (data.comment) html += '<span class="has-comment" title="Has comment">&#128172;</span>';
+                if (task.duration && !task.isPhase && !task.isMilestone && task.duration > 0.5) {
+                    html += '<span class="task-duration">' + (Math.round(task.duration * 10) / 10) + 'mo</span>';
+                }
+                if (task.date) html += '<span class="task-duration">' + task.date + '</span>';
+                html += '</div>';
+
+                html += '<div class="timeline-cell">';
+                html += '<div class="grid-lines">' + generateGridLines() + '</div>';
+                html += '<div class="today-line" style="left:' + (todayOffset * monthWidth) + 'px"></div>';
+
+                if (task.start !== undefined && task.duration) {
+                    var left = task.start * monthWidth;
+                    var width = Math.max(task.duration * monthWidth - 4, 16);
+                    var pct = task.pctComplete !== undefined ? task.pctComplete : 0;
+
+                    if (task.isMilestone) {
+                        var mc = pct >= 100 ? ' completed' : '';
+                        html += '<div class="milestone-marker' + mc + '" style="left:' + (left + 9) + 'px"></div>';
+                    } else {
+                        html += '<div class="bar ' + task.type + '" style="left:' + left + 'px;width:' + width + 'px" ';
+                        html += 'data-task="' + task.name + '" data-pct="' + pct + '" ';
+                        html += 'data-start="' + task.start + '" data-duration="' + task.duration + '" data-type="' + task.type + '">';
+                        html += (width > 85 ? task.name : '');
+                        html += '</div>';
+                    }
+                }
+                html += '</div></div>';
+            });
+
+            body.innerHTML = html;
+            attachBarListeners();
+        }
+
+        function editTask(id, name) {
+            currentTaskId = id;
+            document.getElementById('modal-title').textContent = name;
+            var data = getTaskData(id);
+            selectedRag = data.rag || 'none';
+            document.getElementById('modal-comment').value = data.comment || '';
+            document.querySelectorAll('.rag-option').forEach(function(el) {
+                el.classList.remove('selected');
+                if (el.dataset.rag === selectedRag) el.classList.add('selected');
+            });
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function selectRag(rag) {
+            selectedRag = rag;
+            document.querySelectorAll('.rag-option').forEach(function(el) {
+                el.classList.remove('selected');
+                if (el.dataset.rag === rag) el.classList.add('selected');
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentTaskId = null;
+        }
+
+        function saveTask() {
+            taskData[currentTaskId] = { rag: selectedRag, comment: document.getElementById('modal-comment').value.trim() };
+            saveToStorage();
+            renderGantt(document.querySelector('.filter-btn.active').dataset.filter);
+            closeModal();
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('riverBendSchedule', JSON.stringify(taskData));
+        }
+
+        function loadFromStorage() {
+            var saved = localStorage.getItem('riverBendSchedule');
+            if (saved) {
+                var d = JSON.parse(saved);
+                Object.keys(d).forEach(function(k) { taskData[k] = d[k]; });
+            }
+        }
+
+        function attachBarListeners() {
+            var tooltip = document.getElementById('tooltip');
+
+            function gpc(p) { return p >= 100 ? 'complete' : p >= 75 ? 'high' : p >= 25 ? 'medium' : p > 0 ? 'low' : 'not-started'; }
+            function gpl(p) { return p >= 100 ? 'Complete' : p >= 75 ? 'On Track' : p >= 25 ? 'In Progress' : p > 0 ? 'Started' : 'Not Started'; }
+
+            document.querySelectorAll('.bar').forEach(function(bar) {
+                bar.addEventListener('mouseenter', function(e) {
+                    var task = bar.dataset.task;
+                    var sm = parseFloat(bar.dataset.start);
+                    var dur = parseFloat(bar.dataset.duration);
+                    var type = bar.dataset.type;
+                    var pct = parseInt(bar.dataset.pct) || 0;
+                    var pc = gpc(pct);
+
+                    var sd = new Date(2025, 9 + sm, 1);
+                    var ed = new Date(2025, 9 + sm + Math.ceil(dur), 0);
+                    var fmt = function(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
+
+                    tooltip.querySelector('.tooltip-title').textContent = task;
+                    tooltip.querySelector('.tooltip-content').innerHTML =
+                        '<div style="font-size:1.1rem;font-weight:700;margin-bottom:4px" class="' + pc + '">' + pct + '% Complete</div>' +
+                        '<div class="tooltip-row"><span class="tooltip-label">Status:</span><span>' + gpl(pct) + '</span></div>' +
+                        '<div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;margin:8px 0;overflow:hidden">' +
+                        '<div style="height:100%;width:' + pct + '%;border-radius:4px" class="progress-fill-' + pc + '"></div></div>' +
+                        '<div class="tooltip-row"><span class="tooltip-label">Start:</span><span>' + fmt(sd) + '</span></div>' +
+                        '<div class="tooltip-row"><span class="tooltip-label">End:</span><span>' + fmt(ed) + '</span></div>' +
+                        '<div class="tooltip-row"><span class="tooltip-label">Duration:</span><span>' + (Math.round(dur * 10) / 10) + ' months</span></div>' +
+                        '<div class="tooltip-row"><span class="tooltip-label">Category:</span><span>' + type.charAt(0).toUpperCase() + type.slice(1) + '</span></div>';
+                    tooltip.classList.add('visible');
+                });
+                bar.addEventListener('mousemove', function(e) {
+                    tooltip.style.left = e.clientX + 15 + 'px';
+                    tooltip.style.top = e.clientY + 15 + 'px';
+                });
+                bar.addEventListener('mouseleave', function() { tooltip.classList.remove('visible'); });
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                renderGantt(btn.dataset.filter);
+            });
+        });
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        loadFromStorage();
+        generateMonthLabels();
+        renderGantt();
+    </script>
+</body>
+</html>
