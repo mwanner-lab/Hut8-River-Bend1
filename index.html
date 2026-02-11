@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>River Bend - Design IAP Schedule</title>
+    <title>River Bend - MSY01 Project Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -448,10 +448,304 @@
         .summary-item span:first-child { font-size: 0.9rem; color: #e2e8f0; }
         .summary-date { font-size: 0.8rem; color: #64748b; }
 
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover { color: #94a3b8; background: rgba(255,255,255,0.04); }
+
+        .tab-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Weekly Report Styles */
+        .report-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .report-section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-section-title .section-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+
+        .report-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-high { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-med { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-low { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-complete { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-progress { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-risk { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-upcoming { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+        .badge-planning { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
+        .badge-open { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .badge-monitor { background: rgba(14,165,233,0.15); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
+        .badge-active { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+
+        .report-highlight {
+            background: rgba(59,130,246,0.08);
+            border-left: 3px solid #60a5fa;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+        .report-stat-card {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .report-stat-card .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .report-stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .report-stat-card .stat-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .report-table thead th {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 14px;
+            text-align: left;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .report-table tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #e2e8f0;
+        }
+
+        .report-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+        .report-list { list-style: none; padding: 0; }
+
+        .report-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .report-list li:last-child { border-bottom: none; }
+
+        .report-list li::before {
+            content: '›';
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: -1px;
+        }
+
+        .risk-score-high { color: #f87171; font-weight: 700; }
+        .risk-score-med { color: #fbbf24; font-weight: 700; }
+
+        .lookahead-week {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .lookahead-week h4 {
+            font-size: 0.95rem;
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .lookahead-category { margin-bottom: 12px; }
+
+        .lookahead-category h5 {
+            font-size: 0.8rem;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .lookahead-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lookahead-category ul li {
+            padding: 4px 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .lookahead-category ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #475569;
+        }
+
+        .accel-card {
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.15);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .accel-card .accel-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px; height: 24px;
+            background: rgba(34,197,94,0.2);
+            color: #4ade80;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .accel-card p { font-size: 0.88rem; color: #cbd5e1; }
+
+        .report-kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .report-kpi {
+            text-align: center;
+            padding: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .report-kpi .kpi-value { font-size: 1.4rem; font-weight: 700; color: #4ade80; }
+        .report-kpi .kpi-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+        .report-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .report-header-bar h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .report-header-bar .report-meta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .report-header-bar .report-meta span {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .report-header-bar .report-meta strong { color: #60a5fa; }
+
         @media (max-width: 768px) {
             .gantt-header, .gantt-row { grid-template-columns: 40px 200px 1fr; }
             .modal { min-width: 90%; }
             .summary-section { grid-template-columns: 1fr; }
+            .tab-btn { padding: 10px 12px; font-size: 0.8rem; }
+            .report-grid { grid-template-columns: 1fr; }
+            .report-header-bar { flex-direction: column; gap: 12px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -493,6 +787,14 @@
             </div>
         </header>
 
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('schedule')">Design IAP Schedule</button>
+            <button class="tab-btn" onclick="switchTab('report')">Weekly Construction Report</button>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div class="tab-panel active" id="tab-schedule">
         <div class="controls">
             <button class="filter-btn active" data-filter="all">All Phases</button>
             <button class="filter-btn" data-filter="milestones">Milestones</button>
@@ -566,7 +868,404 @@
                 <div class="summary-item"><span>Installation Complete</span><span class="summary-date">Jul 06, 2026</span></div>
             </div>
         </div>
-    </div>
+        </div> <!-- end tab-schedule -->
+
+        <!-- Weekly Report Tab -->
+        <div class="tab-panel" id="tab-report">
+
+            <div class="report-header-bar">
+                <h2>Tranche 3a — MSY01</h2>
+                <div class="report-meta">
+                    <span>Week Ending <strong>02/06/26</strong></span>
+                    <span>Fluidstack &amp; HUT 8</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="report-kpi-row" style="margin-bottom:24px">
+                <div class="report-kpi">
+                    <div class="kpi-value">0</div>
+                    <div class="kpi-label">Safety Incidents</div>
+                </div>
+                <div class="report-kpi">
+                    <div class="kpi-value">122</div>
+                    <div class="kpi-label">Project Hours</div>
+                </div>
+                <div class="report-kpi">
+                    <div class="kpi-value">7</div>
+                    <div class="kpi-label">Workers On-site</div>
+                </div>
+                <div class="report-kpi">
+                    <div class="kpi-value">85%</div>
+                    <div class="kpi-label">Procurement Complete</div>
+                </div>
+                <div class="report-kpi">
+                    <div class="kpi-value">100%</div>
+                    <div class="kpi-label">Inspection Pass Rate</div>
+                </div>
+                <div class="report-kpi">
+                    <div class="kpi-value" style="color:#fbbf24">2</div>
+                    <div class="kpi-label">High-Priority Risks</div>
+                </div>
+            </div>
+
+            <!-- 1. Executive Summary -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">1</div>
+                    Executive Summary
+                </div>
+
+                <div class="report-highlight">
+                    The RB1 project successfully completed its kickoff week with mobilization and 30% design milestone achieved, on schedule. The facility will be delivered in four phased data halls with the first hall reaching early floor access in November 2026 and final phase commissioning in mid-2027. Foundation work has commenced with Cajun's piling team onsite (7 workers, 122 project hours), currently installing test piles with results expected February 13th. Design coordination is progressing well with teams actively resolving scope gaps and clashes, while procurement is 85% complete with buyout nearing closure. Two high-priority risks require immediate attention: Vertiv LLE delivery schedule confirmation needed by February 13th, and IFC design package completion by April 2026 requiring additional resources and strategic early releases. Weather conditions have caused minor delays (+2 days on test piles) but the overall project remains on schedule with no safety incidents or quality issues reported.
+                </div>
+
+                <h4 style="font-size:0.9rem;color:#a78bfa;margin:20px 0 12px;font-weight:600;">Week in Review — Highlights & Wins</h4>
+                <ul class="report-list">
+                    <li>Kickoff meeting completed — project teams met, deliverables and expectations shared</li>
+                    <li>Design teams began resolving potential scope gaps and design clashes</li>
+                    <li>Buyout is nearing completion</li>
+                </ul>
+
+                <h4 style="font-size:0.9rem;color:#f87171;margin:20px 0 12px;font-weight:600;">Key Risks</h4>
+                <ul class="report-list">
+                    <li>Vertiv LLE not arriving in time</li>
+                    <li>IFC schedule not completed by April 2026</li>
+                    <li>Test pile failures</li>
+                </ul>
+            </div>
+
+            <!-- EFA / RFS Table -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">E</div>
+                    Best Estimate — Early Floor Access &amp; Ready for Service
+                </div>
+                <div style="overflow-x:auto;">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Target Early Access</th>
+                            <th>Target Floor Access</th>
+                            <th>Target Commencement</th>
+                            <th>Critical Power (MW)</th>
+                            <th>Data Hall</th>
+                            <th>Sq Ft</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>11/18/26</td><td>12/18/26</td><td>02/01/27</td><td>65</td><td>1</td><td>73,080</td></tr>
+                        <tr><td>2</td><td>12/30/26</td><td>01/29/27</td><td>03/15/27</td><td>60</td><td>2</td><td>61,712</td></tr>
+                        <tr><td>3</td><td>02/16/27</td><td>03/18/27</td><td>05/02/27</td><td>60</td><td>3</td><td>61,712</td></tr>
+                        <tr><td>4</td><td>03/31/27</td><td>04/30/27</td><td>06/14/27</td><td>60</td><td>4</td><td>61,712</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+            <!-- 2. Safety -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(34,197,94,0.15);color:#4ade80;">2</div>
+                    Safety
+                </div>
+                <div class="report-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="report-stat-card">
+                        <div class="stat-label">Recordables</div>
+                        <div class="stat-value" style="color:#4ade80">None</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="stat-label">Project Hours</div>
+                        <div class="stat-value">122</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="stat-label">Manpower</div>
+                        <div class="stat-value">7</div>
+                        <div class="stat-sub">All pile installation workers</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <div class="stat-label">Weather</div>
+                        <div class="stat-value" style="font-size:1.1rem">Rain, 40s–60s°F</div>
+                        <div class="stat-sub">Scattered showers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Design -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">3</div>
+                    Design
+                </div>
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px;font-weight:600;">STATUS</h4>
+                <p style="font-size:0.9rem;color:#cbd5e1;margin-bottom:16px;line-height:1.6;">DD phase with strategic release of current work for foundations, structural slab on grade, and steel.</p>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:16px 0 10px;font-weight:600;">UPCOMING DELIVERABLES</h4>
+                <ul class="report-list">
+                    <li>Jacobs to submit revised mechanical and electrical designs — Due 02/16/26</li>
+                    <li>HUT8, Jacobs, and FS to coordinate in-person design meeting in Austin, TX</li>
+                </ul>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:16px 0 10px;font-weight:600;">KEY OPEN RFIs &amp; SUBMITTALS</h4>
+                <ul class="report-list">
+                    <li>Vertiv Mechanical submittal (02/02/26) — under review — Bradley Brown (Jacobs)</li>
+                    <li>Vertiv Piping submittal (02/02/26) — under review — Bradley Brown (Jacobs)</li>
+                    <li>RFI 23 — requested complete floor plan — currently in Graycor court</li>
+                </ul>
+            </div>
+
+            <!-- 4. Schedule -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;">4</div>
+                    Schedule
+                </div>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;font-weight:600;">KEY MILESTONES</h4>
+                <div style="overflow-x:auto;">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>Milestone</th><th>Baseline</th><th>Forecast</th><th>Variance</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Mobilization Complete</td><td>1/27/2026</td><td>1/27/2026</td><td>On Time</td><td><span class="report-badge badge-complete">✓ Complete</span></td></tr>
+                        <tr><td>Test Pile Installation</td><td>2/10/2026</td><td>2/12/2026</td><td style="color:#fbbf24">+2 days</td><td><span class="report-badge badge-progress">In Progress</span></td></tr>
+                        <tr><td>DD Design Complete</td><td>2/6/2026</td><td>2/6/2026</td><td>On Time</td><td><span class="report-badge badge-complete">✓ Complete</span></td></tr>
+                        <tr><td>Foundation IFC Drawings</td><td>3/15/2026</td><td>3/15/2026</td><td>On Track</td><td><span class="report-badge badge-upcoming">Upcoming</span></td></tr>
+                        <tr><td>Structural Steel IFC</td><td>3/22/2026</td><td>3/22/2026</td><td>On Track</td><td><span class="report-badge badge-upcoming">Upcoming</span></td></tr>
+                        <tr><td>Full IFC Package</td><td>4/30/2026</td><td>4/30/2026</td><td style="color:#f87171">At Risk</td><td><span class="report-badge badge-risk">Monitoring</span></td></tr>
+                        <tr><td>Building Foundation</td><td>6/15/2026</td><td>TBD</td><td>TBD</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
+                        <tr><td>Data Hall 1 EFA</td><td>9/30/2026</td><td>9/30/2026</td><td>On Track</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
+                        <tr><td>Data Hall 1 RFS</td><td>12/15/2026</td><td>12/15/2026</td><td>On Track</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:24px 0 12px;font-weight:600;">3-WEEK LOOKAHEAD</h4>
+
+                <div class="lookahead-week">
+                    <h4>Week 1: February 7–13, 2026</h4>
+                    <div class="lookahead-category">
+                        <h5>Piling Operations</h5>
+                        <ul>
+                            <li>Complete test pile installation (4 remaining)</li>
+                            <li>Conduct load testing on initial test piles</li>
+                            <li>Cajun crew (7 workers) continues production piling</li>
+                            <li>Target: 15–20 production piles installed</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Design Activities</h5>
+                        <ul>
+                            <li>Coordinate design clash resolution meeting (02/10)</li>
+                            <li>Jacobs submits revised org charts (target 02/16)</li>
+                            <li>Continue foundation and structural steel design development</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Procurement</h5>
+                        <ul>
+                            <li>Finalize remaining buyout packages (structural steel, precast panels)</li>
+                            <li>Track Vertiv LLE delivery commitment</li>
+                            <li><strong style="color:#fbbf24;">Key Deliverable:</strong> Test pile results expected 02/13</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lookahead-week">
+                    <h4>Week 2: February 14–20, 2026</h4>
+                    <div class="lookahead-category">
+                        <h5>Piling Operations</h5>
+                        <ul>
+                            <li>Continue production piling based on test results</li>
+                            <li>Begin layout for building foundation areas</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Design Activities</h5>
+                        <ul>
+                            <li>In-person design coordination meeting 2/19/26 in Austin, TX (HUT8, Jacobs, FS)</li>
+                            <li>Reviewing (approval) Vertiv mechanical and piping submittals</li>
+                            <li>Release additional foundation drawings for bidding</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Procurement</h5>
+                        <ul>
+                            <li>Award structural steel package</li>
+                            <li>Continue precast panel negotiations</li>
+                            <li>Schedule first foundation inspection with third-party testing agency</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lookahead-week">
+                    <h4>Week 3: February 21–27, 2026</h4>
+                    <div class="lookahead-category">
+                        <h5>Piling Operations</h5>
+                        <ul>
+                            <li>Production piling continues (weather permitting)</li>
+                            <li>Target: Complete 40% of total pile count</li>
+                            <li>Begin pile cap excavation in completed areas</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Design Activities</h5>
+                        <ul>
+                            <li>Implement decisions from Austin design meeting</li>
+                            <li>Release slab-on-grade design for early bidding</li>
+                            <li>Progress electrical distribution design to 50%</li>
+                        </ul>
+                    </div>
+                    <div class="lookahead-category">
+                        <h5>Site Activities</h5>
+                        <ul>
+                            <li>Survey crew mobilization for building layout</li>
+                            <li>Establish construction laydown areas</li>
+                            <li>Install temporary power and site facilities</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:24px 0 12px;font-weight:600;">ACCELERATION STRATEGIES</h4>
+                <div class="report-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                    <div class="accel-card">
+                        <div class="accel-num">1</div>
+                        <p>Utilize MC cable for all LV installation</p>
+                    </div>
+                    <div class="accel-card">
+                        <div class="accel-num">2</div>
+                        <p>Utilize Quick Disconnects (QD) for Precast Panel installation</p>
+                    </div>
+                    <div class="accel-card">
+                        <div class="accel-num">3</div>
+                        <p>Coordinate sequential work concurrently — don't wait for scopes to complete, chase work</p>
+                    </div>
+                    <div class="accel-card">
+                        <div class="accel-num">4</div>
+                        <p>Release design to trades for early work</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Quality & Commissioning -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(236,72,153,0.15);color:#f472b6;">5</div>
+                    Quality &amp; Commissioning
+                </div>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px;font-weight:600;">QUALITY ACTIVITIES THIS WEEK</h4>
+                <ul class="report-list">
+                    <li>Conducted pre-construction quality meeting with Cajun piling subcontractor</li>
+                    <li>Reviewed and approved pile installation work plan and QC procedures</li>
+                    <li>Established pile installation inspection protocol with third-party geotechnical engineer</li>
+                    <li>Documented baseline site conditions with photo survey</li>
+                    <li>Reviewing Vertiv mechanical and piping submittals for code compliance</li>
+                    <li>No quality incidents reported</li>
+                </ul>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 12px;font-weight:600;">QA/QC METRICS</h4>
+                <div class="report-kpi-row">
+                    <div class="report-kpi">
+                        <div class="kpi-value">3 / 3</div>
+                        <div class="kpi-label">Inspections Complete</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="kpi-value">100%</div>
+                        <div class="kpi-label">Pass Rate</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="kpi-value">2</div>
+                        <div class="kpi-label">Submittals Received</div>
+                    </div>
+                    <div class="report-kpi">
+                        <div class="kpi-value" style="color:#fbbf24">0</div>
+                        <div class="kpi-label">Submittals Approved</div>
+                    </div>
+                </div>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;font-weight:600;">COMMISSIONING PLANNING</h4>
+                <ul class="report-list">
+                    <li>Commissioning agent contract finalization in progress</li>
+                    <li>Preliminary commissioning plan development initiated</li>
+                    <li>Coordinating with Vertiv on factory testing requirements and protocols</li>
+                    <li>Reviewing owner's equipment testing and acceptance criteria</li>
+                </ul>
+
+                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;font-weight:600;">DEFICIENCIES / NON-CONFORMANCES</h4>
+                <p style="font-size:0.9rem;color:#4ade80;">None reported.</p>
+            </div>
+
+            <!-- 6. Risks and Issues -->
+            <div class="report-section">
+                <div class="report-section-title">
+                    <div class="section-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">6</div>
+                    Major Risks &amp; Issues
+                </div>
+                <div style="overflow-x:auto;">
+                <table class="report-table">
+                    <thead>
+                        <tr><th>#</th><th>Risk Description</th><th>Prob</th><th>Impact</th><th>Score</th><th>Mitigation Strategy</th><th>Owner</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td><td>Vertiv LLE late delivery impacts critical path</td><td>Med</td><td>High</td>
+                            <td><span class="risk-score-high">HIGH</span></td>
+                            <td>Expedite procurement, identify alternatives, adjust sequence</td>
+                            <td>Jacobs / Atlas</td>
+                            <td><span class="report-badge badge-open">Open</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>IFC design not complete by April 2026</td><td>Med</td><td>High</td>
+                            <td><span class="risk-score-high">HIGH</span></td>
+                            <td>Add resources, early releases, weekly reviews</td>
+                            <td>Jacobs</td>
+                            <td><span class="report-badge badge-open">Open</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>Test piles fail load testing</td><td>Low</td><td>High</td>
+                            <td><span class="risk-score-med">MED</span></td>
+                            <td>Conservative design, engineer oversight, contingency ready</td>
+                            <td>Cajun / Jacobs</td>
+                            <td><span class="report-badge badge-monitor">Monitor</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td><td>Weather delays foundation schedule</td><td>High</td><td>Med</td>
+                            <td><span class="risk-score-med">MED</span></td>
+                            <td>Build float, drainage prep, forecast monitoring</td>
+                            <td>RB1 / Cajun</td>
+                            <td><span class="report-badge badge-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td><td>Design clashes delay drawings</td><td>Med</td><td>Med</td>
+                            <td><span class="risk-score-med">MED</span></td>
+                            <td>Enhanced coordination, 3D clash detection, weekly meetings</td>
+                            <td>Jacobs / FS</td>
+                            <td><span class="report-badge badge-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td><td>Electrical gear delivery delays energization</td><td>Low</td><td>High</td>
+                            <td><span class="risk-score-med">MED</span></td>
+                            <td>Early procurement, weekly tracking, expediting options</td>
+                            <td>Atlas / RB1</td>
+                            <td><span class="report-badge badge-monitor">Monitor</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td><td>Labor availability for peak periods</td><td>Med</td><td>Med</td>
+                            <td><span class="risk-score-med">MED</span></td>
+                            <td>Early planning, incentives, regional recruiting, prefab</td>
+                            <td>RB1 / Subs</td>
+                            <td><span class="report-badge badge-planning">Planning</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+        </div> <!-- end tab-report -->
+    </div> <!-- end container -->
 
     <!-- Tooltip -->
     <div class="tooltip" id="tooltip">
@@ -616,7 +1315,7 @@
         var currentTaskId = null;
         var selectedRag = 'none';
         var taskData = {};
-        var todayOffset = 3.32;
+        var todayOffset = 4.39;
 
         var tasks = [
             // ===== MILESTONES - PROJECT =====
@@ -1005,6 +1704,13 @@
         loadFromStorage();
         generateMonthLabels();
         renderGantt();
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
     </script>
 </body>
 </html>
