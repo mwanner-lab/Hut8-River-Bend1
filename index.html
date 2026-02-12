@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>River Bend - MSY01 Project Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Lora', Georgia, serif;
+            background: linear-gradient(135deg, #141413 0%, #1c1c1a 100%);
             min-height: 100vh;
-            color: #e4e4e7;
+            color: #faf9f5;
             padding: 20px;
         }
 
@@ -21,21 +24,22 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(250,249,245,0.04);
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(176,174,165,0.15);
         }
 
         h1 {
+            font-family: 'Poppins', sans-serif;
             font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            background: linear-gradient(90deg, #d97757, #e8a87c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
 
-        .subtitle { color: #94a3b8; font-size: 0.95rem; }
+        .subtitle { color: #b0aea5; font-size: 0.95rem; }
 
         .project-info {
             display: grid;
@@ -45,15 +49,15 @@
         }
 
         .info-card {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(217,119,87,0.1);
             padding: 15px;
             border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(217,119,87,0.2);
         }
 
         .info-card label {
             font-size: 0.75rem;
-            color: #94a3b8;
+            color: #b0aea5;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -61,7 +65,7 @@
         .info-card .value {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #60a5fa;
+            color: #d97757;
             margin-top: 4px;
         }
 
@@ -75,18 +79,19 @@
 
         .filter-btn {
             padding: 8px 16px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: #e4e4e7;
+            border: 1px solid rgba(176,174,165,0.25);
+            background: rgba(250,249,245,0.04);
+            color: #faf9f5;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.85rem;
+            font-family: 'Poppins', sans-serif;
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: rgba(59, 130, 246, 0.3);
-            border-color: #60a5fa;
+            background: rgba(217,119,87,0.3);
+            border-color: #d97757;
         }
 
         .legend {
@@ -94,7 +99,7 @@
             gap: 20px;
             flex-wrap: wrap;
             padding: 15px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(250,249,245,0.025);
             border-radius: 8px;
             margin-bottom: 20px;
         }
@@ -116,34 +121,34 @@
             display: flex;
             gap: 20px;
             padding: 10px 15px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(250,249,245,0.025);
             border-radius: 8px;
             margin-bottom: 20px;
             align-items: center;
         }
 
-        .rag-legend-title { font-size: 0.8rem; color: #94a3b8; font-weight: 500; }
+        .rag-legend-title { font-size: 0.8rem; color: #b0aea5; font-weight: 500; }
 
         .rag-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; }
 
         .rag-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .rag-dot.red { background: #ef4444; }
-        .rag-dot.amber { background: #f59e0b; }
-        .rag-dot.green { background: #22c55e; }
-        .rag-dot.none { background: #64748b; }
+        .rag-dot.red { background: #c0392b; }
+        .rag-dot.amber { background: #d97757; }
+        .rag-dot.green { background: #788c5d; }
+        .rag-dot.none { background: #8a877d; }
 
         .gantt-container {
-            background: rgba(255,255,255,0.03);
+            background: rgba(250,249,245,0.025);
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(176,174,165,0.15);
             overflow: hidden;
         }
 
         .gantt-header {
             display: grid;
             grid-template-columns: 50px 320px 1fr;
-            background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(20,20,19,0.5);
+            border-bottom: 1px solid rgba(176,174,165,0.15);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -153,8 +158,8 @@
             padding: 12px 16px;
             font-weight: 600;
             font-size: 0.85rem;
-            color: #94a3b8;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            color: #b0aea5;
+            border-right: 1px solid rgba(176,174,165,0.15);
         }
 
         .rag-header { text-align: center; padding: 12px 8px; }
@@ -166,56 +171,56 @@
             padding: 12px 8px;
             text-align: center;
             font-size: 0.75rem;
-            color: #94a3b8;
-            border-right: 1px solid rgba(255,255,255,0.05);
+            color: #b0aea5;
+            border-right: 1px solid rgba(250,249,245,0.04);
         }
 
-        .month-label.year-start { border-left: 2px solid rgba(255,255,255,0.2); }
+        .month-label.year-start { border-left: 2px solid rgba(176,174,165,0.25); }
 
         .gantt-body { max-height: 70vh; overflow-y: auto; overflow-x: hidden; }
 
         .gantt-row {
             display: grid;
             grid-template-columns: 50px 320px 1fr;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(250,249,245,0.04);
             transition: background 0.2s;
         }
 
-        .gantt-row:hover { background: rgba(255,255,255,0.03); }
+        .gantt-row:hover { background: rgba(250,249,245,0.025); }
 
-        .gantt-row.phase-header { background: rgba(59, 130, 246, 0.1); }
-        .gantt-row.phase-header .task-name { font-weight: 700; color: #60a5fa; }
+        .gantt-row.phase-header { background: rgba(217,119,87,0.1); }
+        .gantt-row.phase-header .task-name { font-weight: 700; color: #d97757; }
 
         .rag-cell {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(176,174,165,0.15);
             cursor: pointer;
         }
 
         .rag-indicator {
             width: 20px; height: 20px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(176,174,165,0.25);
             transition: all 0.2s;
         }
 
         .rag-indicator:hover { transform: scale(1.2); }
-        .rag-indicator.red { background: #ef4444; border-color: #ef4444; }
-        .rag-indicator.amber { background: #f59e0b; border-color: #f59e0b; }
-        .rag-indicator.green { background: #22c55e; border-color: #22c55e; }
+        .rag-indicator.red { background: #c0392b; border-color: #ef4444; }
+        .rag-indicator.amber { background: #d97757; border-color: #d97757; }
+        .rag-indicator.green { background: #788c5d; border-color: #788c5d; }
         .rag-indicator.none { background: transparent; }
 
         .task-cell {
             padding: 10px 16px;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            border-right: 1px solid rgba(176,174,165,0.15);
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
         }
 
-        .task-cell:hover { background: rgba(255,255,255,0.02); }
+        .task-cell:hover { background: rgba(250,249,245,0.02); }
 
         .task-name {
             font-size: 0.82rem;
@@ -228,9 +233,9 @@
         .task-indent-1 { padding-left: 32px; }
         .task-indent-2 { padding-left: 48px; }
 
-        .task-duration { font-size: 0.7rem; color: #64748b; white-space: nowrap; }
+        .task-duration { font-size: 0.7rem; color: #8a877d; white-space: nowrap; }
 
-        .has-comment { color: #60a5fa; font-size: 12px; }
+        .has-comment { color: #d97757; font-size: 12px; }
 
         .timeline-cell {
             position: relative;
@@ -257,31 +262,31 @@
 
         .bar:hover {
             transform: scaleY(1.15);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(20,20,19,0.5);
             z-index: 5;
         }
 
-        .bar.design { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
-        .bar.procurement { background: linear-gradient(90deg, #6366f1, #818cf8); }
-        .bar.substation { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .bar.sitework { background: linear-gradient(90deg, #14b8a6, #2dd4bf); }
-        .bar.construction { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-        .bar.vertiv { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
-        .bar.commissioning { background: linear-gradient(90deg, #ec4899, #f472b6); }
-        .bar.power { background: linear-gradient(90deg, #22c55e, #4ade80); }
-        .bar.milestone { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .bar.design { background: linear-gradient(90deg, #6a9bcc, #89b3d9); }
+        .bar.procurement { background: linear-gradient(90deg, #4a7fa8, #6a9bcc); }
+        .bar.substation { background: linear-gradient(90deg, #d97757, #e8a87c); }
+        .bar.sitework { background: linear-gradient(90deg, #788c5d, #92a878); }
+        .bar.construction { background: linear-gradient(90deg, #5889b0, #7aa5c8); }
+        .bar.vertiv { background: linear-gradient(90deg, #7aa5c8, #9bbdda); }
+        .bar.commissioning { background: linear-gradient(90deg, #c4694e, #d97757); }
+        .bar.power { background: linear-gradient(90deg, #788c5d, #92a878); }
+        .bar.milestone { background: linear-gradient(90deg, #d97757, #e8a87c); }
 
         .milestone-marker {
             position: absolute;
             width: 0; height: 0;
             border-left: 9px solid transparent;
             border-right: 9px solid transparent;
-            border-bottom: 14px solid #fbbf24;
+            border-bottom: 14px solid #d97757;
             transform: translateX(-9px);
             cursor: pointer;
         }
 
-        .milestone-marker.completed { border-bottom-color: #22c55e; }
+        .milestone-marker.completed { border-bottom-color: #788c5d; }
 
         .grid-lines {
             position: absolute;
@@ -292,24 +297,24 @@
 
         .grid-line {
             min-width: 55px;
-            border-right: 1px solid rgba(255,255,255,0.03);
+            border-right: 1px solid rgba(250,249,245,0.025);
         }
 
-        .grid-line.year-start { border-right: 2px solid rgba(255,255,255,0.1); }
+        .grid-line.year-start { border-right: 2px solid rgba(176,174,165,0.15); }
 
         .today-line {
             position: absolute;
             top: 0; bottom: 0;
             width: 2px;
-            background: #ef4444;
+            background: #c0392b;
             z-index: 4;
             pointer-events: none;
         }
 
         .tooltip {
             position: fixed;
-            background: #1e293b;
-            border: 1px solid rgba(255,255,255,0.2);
+            background: #1c1c1a;
+            border: 1px solid rgba(176,174,165,0.25);
             padding: 12px;
             border-radius: 8px;
             font-size: 0.8rem;
@@ -321,27 +326,27 @@
         }
 
         .tooltip.visible { opacity: 1; }
-        .tooltip-title { font-weight: 600; margin-bottom: 8px; color: #60a5fa; }
+        .tooltip-title { font-weight: 600; margin-bottom: 8px; color: #d97757; }
         .tooltip-row { display: flex; justify-content: space-between; margin-bottom: 4px; gap: 16px; }
-        .tooltip-label { color: #94a3b8; }
+        .tooltip-label { color: #b0aea5; }
 
-        .complete { color: #4ade80; }
-        .high { color: #60a5fa; }
-        .medium { color: #fbbf24; }
-        .low { color: #f87171; }
-        .not-started { color: #94a3b8; }
+        .complete { color: #92a878; }
+        .high { color: #d97757; }
+        .medium { color: #d97757; }
+        .low { color: #c0392b; }
+        .not-started { color: #b0aea5; }
 
-        .progress-fill-complete { background: linear-gradient(90deg, #22c55e, #4ade80); }
-        .progress-fill-high { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-        .progress-fill-medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .progress-fill-low { background: linear-gradient(90deg, #ef4444, #f87171); }
-        .progress-fill-not-started { background: rgba(255,255,255,0.2); }
+        .progress-fill-complete { background: linear-gradient(90deg, #788c5d, #92a878); }
+        .progress-fill-high { background: linear-gradient(90deg, #5889b0, #7aa5c8); }
+        .progress-fill-medium { background: linear-gradient(90deg, #d97757, #e8a87c); }
+        .progress-fill-low { background: linear-gradient(90deg, #a93226, #c0392b); }
+        .progress-fill-not-started { background: rgba(176,174,165,0.25); }
 
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(20,20,19,0.8);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -350,63 +355,63 @@
         .modal-overlay.active { display: flex; }
 
         .modal {
-            background: #1e293b;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #1c1c1a;
+            border: 1px solid rgba(176,174,165,0.15);
             border-radius: 16px;
             padding: 30px;
             min-width: 450px;
             max-width: 90%;
         }
 
-        .modal h3 { font-size: 1.2rem; margin-bottom: 20px; color: #f1f5f9; }
+        .modal h3 { font-size: 1.2rem; margin-bottom: 20px; color: #faf9f5; }
         .modal .input-group { margin-bottom: 15px; }
 
         .modal .input-group label {
-            display: block; font-size: 0.8rem; color: #94a3b8;
+            display: block; font-size: 0.8rem; color: #b0aea5;
             margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         .modal input, .modal textarea, .modal select {
             width: 100%; padding: 12px 16px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; color: #f1f5f9;
+            background: rgba(20,20,19,0.5);
+            border: 1px solid rgba(176,174,165,0.15);
+            border-radius: 8px; color: #faf9f5;
             font-size: 1rem; font-family: inherit;
         }
 
         .modal textarea { min-height: 100px; resize: vertical; }
 
         .modal input:focus, .modal textarea:focus, .modal select:focus {
-            outline: none; border-color: #60a5fa;
+            outline: none; border-color: #d97757;
         }
 
         .rag-select-group { display: flex; gap: 10px; }
 
         .rag-option {
             flex: 1; padding: 12px;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(176,174,165,0.15);
             border-radius: 8px; text-align: center;
             cursor: pointer; transition: all 0.2s;
         }
 
-        .rag-option:hover { border-color: rgba(255,255,255,0.3); }
+        .rag-option:hover { border-color: rgba(176,174,165,0.35); }
         .rag-option.selected { border-width: 3px; }
         .rag-option.red { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         .rag-option.red.selected { background: rgba(239, 68, 68, 0.2); }
-        .rag-option.amber { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
-        .rag-option.amber.selected { background: rgba(245, 158, 11, 0.2); }
-        .rag-option.green { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
-        .rag-option.green.selected { background: rgba(34, 197, 94, 0.2); }
-        .rag-option.none { border-color: #64748b; background: rgba(100, 116, 139, 0.1); }
-        .rag-option.none.selected { background: rgba(100, 116, 139, 0.2); }
+        .rag-option.amber { border-color: #d97757; background: rgba(217,119,87,0.1); }
+        .rag-option.amber.selected { background: rgba(217,119,87,0.2); }
+        .rag-option.green { border-color: #788c5d; background: rgba(120,140,93,0.1); }
+        .rag-option.green.selected { background: rgba(120,140,93,0.2); }
+        .rag-option.none { border-color: #8a877d; background: rgba(100, 116, 139, 0.1); }
+        .rag-option.none.selected { background: rgba(138,135,125,0.2); }
 
         .rag-option-dot { width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 8px; }
-        .rag-option.red .rag-option-dot { background: #ef4444; }
-        .rag-option.amber .rag-option-dot { background: #f59e0b; }
-        .rag-option.green .rag-option-dot { background: #22c55e; }
-        .rag-option.none .rag-option-dot { background: #64748b; }
+        .rag-option.red .rag-option-dot { background: #c0392b; }
+        .rag-option.amber .rag-option-dot { background: #d97757; }
+        .rag-option.green .rag-option-dot { background: #788c5d; }
+        .rag-option.none .rag-option-dot { background: #8a877d; }
 
-        .rag-option-label { font-size: 0.75rem; color: #94a3b8; }
+        .rag-option-label { font-size: 0.75rem; color: #b0aea5; }
 
         .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 25px; }
 
@@ -415,9 +420,9 @@
             cursor: pointer; transition: all 0.2s;
         }
 
-        .modal .btn-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; }
-        .modal .btn-save { background: #3b82f6; border: none; color: white; }
-        .modal .btn-save:hover { background: #2563eb; }
+        .modal .btn-cancel { background: transparent; border: 1px solid rgba(176,174,165,0.25); color: #b0aea5; }
+        .modal .btn-save { background: #d97757; border: none; color: white; }
+        .modal .btn-save:hover { background: #c4694e; }
 
         .summary-section {
             display: grid;
@@ -427,8 +432,8 @@
         }
 
         .summary-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(250,249,245,0.025);
+            border: 1px solid rgba(176,174,165,0.15);
             border-radius: 12px;
             padding: 20px;
         }
@@ -436,27 +441,27 @@
         .summary-title {
             font-size: 1rem; font-weight: 600;
             margin-bottom: 15px; padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(176,174,165,0.15);
         }
 
         .summary-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0; border-bottom: 1px solid rgba(250,249,245,0.04);
         }
 
         .summary-item:last-child { border-bottom: none; }
-        .summary-item span:first-child { font-size: 0.9rem; color: #e2e8f0; }
-        .summary-date { font-size: 0.8rem; color: #64748b; }
+        .summary-item span:first-child { font-size: 0.9rem; color: #e8e6dc; }
+        .summary-date { font-size: 0.8rem; color: #8a877d; }
 
         /* Tab Navigation */
         .tab-nav {
             display: flex;
             gap: 4px;
             margin-bottom: 24px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(20,20,19,0.5);
             padding: 4px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(176,174,165,0.12);
         }
 
         .tab-btn {
@@ -464,21 +469,21 @@
             padding: 12px 24px;
             background: transparent;
             border: none;
-            color: #64748b;
+            color: #8a877d;
             font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.25s;
-            font-family: inherit;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .tab-btn:hover { color: #94a3b8; background: rgba(255,255,255,0.04); }
+        .tab-btn:hover { color: #b0aea5; background: rgba(250,249,245,0.035); }
 
         .tab-btn.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+            background: rgba(217,119,87,0.2);
+            color: #d97757;
+            box-shadow: 0 2px 8px rgba(217,119,87,0.2);
         }
 
         .tab-panel { display: none; }
@@ -486,19 +491,20 @@
 
         /* Weekly Report Styles */
         .report-section {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(250,249,245,0.025);
+            border: 1px solid rgba(176,174,165,0.15);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
         }
 
         .report-section-title {
+            font-family: 'Poppins', sans-serif;
             font-size: 1.15rem;
             font-weight: 700;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(176,174,165,0.15);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -520,41 +526,41 @@
             letter-spacing: 0.5px;
         }
 
-        .badge-high { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-        .badge-med { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-        .badge-low { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-        .badge-complete { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-        .badge-progress { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
-        .badge-risk { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-        .badge-upcoming { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
-        .badge-planning { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
-        .badge-open { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-        .badge-monitor { background: rgba(14,165,233,0.15); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
-        .badge-active { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-high { background: rgba(192,57,43,0.15); color: #e06050; border: 1px solid rgba(192,57,43,0.3); }
+        .badge-med { background: rgba(217,119,87,0.15); color: #d97757; border: 1px solid rgba(217,119,87,0.3); }
+        .badge-low { background: rgba(120,140,93,0.15); color: #92a878; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-complete { background: rgba(120,140,93,0.15); color: #92a878; border: 1px solid rgba(120,140,93,0.3); }
+        .badge-progress { background: rgba(217,119,87,0.15); color: #d97757; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-risk { background: rgba(192,57,43,0.15); color: #e06050; border: 1px solid rgba(192,57,43,0.3); }
+        .badge-upcoming { background: rgba(106,155,204,0.15); color: #6a9bcc; border: 1px solid rgba(139,92,246,0.3); }
+        .badge-planning { background: rgba(100,116,139,0.15); color: #b0aea5; border: 1px solid rgba(100,116,139,0.3); }
+        .badge-open { background: rgba(217,119,87,0.15); color: #d97757; border: 1px solid rgba(217,119,87,0.3); }
+        .badge-monitor { background: rgba(106,155,204,0.15); color: #89b3d9; border: 1px solid rgba(106,155,204,0.3); }
+        .badge-active { background: rgba(217,119,87,0.15); color: #d97757; border: 1px solid rgba(59,130,246,0.3); }
 
         .report-highlight {
-            background: rgba(59,130,246,0.08);
-            border-left: 3px solid #60a5fa;
+            background: rgba(217,119,87,0.08);
+            border-left: 3px solid #d97757;
             padding: 16px 20px;
             border-radius: 0 8px 8px 0;
             margin-bottom: 16px;
             font-size: 0.9rem;
             line-height: 1.7;
-            color: #cbd5e1;
+            color: #e8e6dc;
         }
 
         .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 
         .report-stat-card {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(20,20,19,0.4);
+            border: 1px solid rgba(176,174,165,0.12);
             border-radius: 10px;
             padding: 18px;
         }
 
         .report-stat-card .stat-label {
             font-size: 0.75rem;
-            color: #64748b;
+            color: #8a877d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
@@ -563,12 +569,12 @@
         .report-stat-card .stat-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #faf9f5;
         }
 
         .report-stat-card .stat-sub {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: #b0aea5;
             margin-top: 4px;
         }
 
@@ -579,32 +585,32 @@
         }
 
         .report-table thead th {
-            background: rgba(0,0,0,0.3);
+            background: rgba(20,20,19,0.5);
             padding: 10px 14px;
             text-align: left;
-            color: #94a3b8;
+            color: #b0aea5;
             font-weight: 600;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(176,174,165,0.15);
         }
 
         .report-table tbody td {
             padding: 10px 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: #e2e8f0;
+            border-bottom: 1px solid rgba(250,249,245,0.04);
+            color: #e8e6dc;
         }
 
-        .report-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+        .report-table tbody tr:hover { background: rgba(250,249,245,0.025); }
 
         .report-list { list-style: none; padding: 0; }
 
         .report-list li {
             padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(250,249,245,0.04);
             font-size: 0.9rem;
-            color: #cbd5e1;
+            color: #e8e6dc;
             display: flex;
             align-items: flex-start;
             gap: 10px;
@@ -614,19 +620,19 @@
 
         .report-list li::before {
             content: '›';
-            color: #60a5fa;
+            color: #d97757;
             font-weight: 700;
             font-size: 1.1rem;
             flex-shrink: 0;
             margin-top: -1px;
         }
 
-        .risk-score-high { color: #f87171; font-weight: 700; }
-        .risk-score-med { color: #fbbf24; font-weight: 700; }
+        .risk-score-high { color: #e06050; font-weight: 700; }
+        .risk-score-med { color: #d97757; font-weight: 700; }
 
         .lookahead-week {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(20,20,19,0.4);
+            border: 1px solid rgba(176,174,165,0.12);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 16px;
@@ -634,7 +640,7 @@
 
         .lookahead-week h4 {
             font-size: 0.95rem;
-            color: #60a5fa;
+            color: #d97757;
             margin-bottom: 12px;
             font-weight: 600;
         }
@@ -643,7 +649,7 @@
 
         .lookahead-category h5 {
             font-size: 0.8rem;
-            color: #a78bfa;
+            color: #6a9bcc;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
@@ -657,7 +663,7 @@
         .lookahead-category ul li {
             padding: 4px 0;
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: #b0aea5;
             padding-left: 16px;
             position: relative;
         }
@@ -666,12 +672,12 @@
             content: '•';
             position: absolute;
             left: 0;
-            color: #475569;
+            color: #8a877d;
         }
 
         .accel-card {
-            background: rgba(34,197,94,0.06);
-            border: 1px solid rgba(34,197,94,0.15);
+            background: rgba(120,140,93,0.06);
+            border: 1px solid rgba(120,140,93,0.15);
             border-radius: 10px;
             padding: 16px;
         }
@@ -681,15 +687,15 @@
             align-items: center;
             justify-content: center;
             width: 24px; height: 24px;
-            background: rgba(34,197,94,0.2);
-            color: #4ade80;
+            background: rgba(120,140,93,0.2);
+            color: #92a878;
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .accel-card p { font-size: 0.88rem; color: #cbd5e1; }
+        .accel-card p { font-size: 0.88rem; color: #e8e6dc; }
 
         .report-kpi-row {
             display: grid;
@@ -701,13 +707,13 @@
         .report-kpi {
             text-align: center;
             padding: 14px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(20,20,19,0.4);
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(176,174,165,0.09);
         }
 
-        .report-kpi .kpi-value { font-size: 1.4rem; font-weight: 700; color: #4ade80; }
-        .report-kpi .kpi-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .report-kpi .kpi-value { font-size: 1.4rem; font-weight: 700; color: #92a878; }
+        .report-kpi .kpi-label { font-size: 0.7rem; color: #8a877d; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
         .report-header-bar {
             display: flex;
@@ -715,15 +721,15 @@
             align-items: center;
             margin-bottom: 24px;
             padding: 20px 24px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(250,249,245,0.025);
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(176,174,165,0.12);
         }
 
         .report-header-bar h2 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #faf9f5;
         }
 
         .report-header-bar .report-meta {
@@ -734,10 +740,24 @@
 
         .report-header-bar .report-meta span {
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: #b0aea5;
         }
 
-        .report-header-bar .report-meta strong { color: #60a5fa; }
+        .report-header-bar .report-meta strong { color: #d97757; }
+
+        h2, h3, h4, h5,
+        .summary-title,
+        .info-card label,
+        .stat-label,
+        .kpi-label,
+        .report-badge,
+        .rag-legend-title,
+        .report-header-bar h2,
+        .report-table thead th,
+        .lookahead-category h5,
+        .modal h3 {
+            font-family: 'Poppins', sans-serif;
+        }
 
         @media (max-width: 768px) {
             .gantt-header, .gantt-row { grid-template-columns: 40px 200px 1fr; }
@@ -810,20 +830,20 @@
             <div class="rag-item"><div class="rag-dot amber"></div> Amber - Caution</div>
             <div class="rag-item"><div class="rag-dot green"></div> Green - On Track</div>
             <div class="rag-item"><div class="rag-dot none"></div> Not Set</div>
-            <span style="margin-left: auto; font-size: 0.75rem; color: #64748b;">Click task name or RAG to add comments</span>
+            <span style="margin-left: auto; font-size: 0.75rem; color: #8a877d;">Click task name or RAG to add comments</span>
         </div>
 
         <div class="legend">
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>Design</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #6366f1, #818cf8);"></div>Procurement</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>Substation</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #14b8a6, #2dd4bf);"></div>Site Work</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>Construction</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #0ea5e9, #38bdf8);"></div>Vertiv</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #ec4899, #f472b6);"></div>Commissioning</div>
-            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #22c55e, #4ade80);"></div>Power</div>
-            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #fbbf24;display:inline-block;"></div>Milestone</div>
-            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #22c55e;display:inline-block;"></div>Complete</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #6a9bcc, #89b3d9);"></div>Design</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #4a7fa8, #6a9bcc);"></div>Procurement</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #d97757, #e8a87c);"></div>Substation</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #788c5d, #92a878);"></div>Site Work</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #5889b0, #7aa5c8);"></div>Construction</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #7aa5c8, #9bbdda);"></div>Vertiv</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #c4694e, #d97757);"></div>Commissioning</div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(90deg, #788c5d, #92a878);"></div>Power</div>
+            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #d97757;display:inline-block;"></div>Milestone</div>
+            <div class="legend-item"><div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:12px solid #788c5d;display:inline-block;"></div>Complete</div>
         </div>
 
         <div class="gantt-container">
@@ -838,7 +858,7 @@
         <!-- Summary Section -->
         <div class="summary-section">
             <div class="summary-card">
-                <h3 class="summary-title" style="color: #22c55e;">Permanent Power Staging</h3>
+                <h3 class="summary-title" style="color: #788c5d;">Permanent Power Staging</h3>
                 <div class="summary-item"><span>50 MW</span><span class="summary-date">Jul 06, 2026</span></div>
                 <div class="summary-item"><span>100 MW</span><span class="summary-date">Aug 03, 2026</span></div>
                 <div class="summary-item"><span>150 MW</span><span class="summary-date">Sep 08, 2026</span></div>
@@ -848,7 +868,7 @@
             </div>
 
             <div class="summary-card">
-                <h3 class="summary-title" style="color: #60a5fa;">Key Milestones</h3>
+                <h3 class="summary-title" style="color: #d97757;">Key Milestones</h3>
                 <div class="summary-item"><span>&#10003; Limited NTP</span><span class="summary-date">Oct 16, 2025</span></div>
                 <div class="summary-item"><span>&#10003; Design Build Agreement</span><span class="summary-date">Dec 16, 2025</span></div>
                 <div class="summary-item"><span>MOB to Site</span><span class="summary-date">Feb 02, 2026</span></div>
@@ -859,7 +879,7 @@
             </div>
 
             <div class="summary-card">
-                <h3 class="summary-title" style="color: #a78bfa;">Vertiv Design Milestones</h3>
+                <h3 class="summary-title" style="color: #6a9bcc;">Vertiv Design Milestones</h3>
                 <div class="summary-item"><span>BOD Set Submittal</span><span class="summary-date">Jan 12, 2026</span></div>
                 <div class="summary-item"><span>fGMP Proposal</span><span class="summary-date">Mar 02, 2026</span></div>
                 <div class="summary-item"><span>DD Set Submittal</span><span class="summary-date">Mar 16, 2026</span></div>
@@ -904,7 +924,7 @@
                     <div class="kpi-label">Inspection Pass Rate</div>
                 </div>
                 <div class="report-kpi">
-                    <div class="kpi-value" style="color:#fbbf24">2</div>
+                    <div class="kpi-value" style="color:#d97757">2</div>
                     <div class="kpi-label">High-Priority Risks</div>
                 </div>
             </div>
@@ -912,7 +932,7 @@
             <!-- 1. Executive Summary -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">1</div>
+                    <div class="section-icon" style="background:rgba(217,119,87,0.15);color:#d97757;">1</div>
                     Executive Summary
                 </div>
 
@@ -920,7 +940,7 @@
                     The RB1 project successfully completed its kickoff week with mobilization and 30% design milestone achieved, on schedule. The facility will be delivered in four phased data halls with the first hall reaching early floor access in November 2026 and final phase commissioning in mid-2027. Foundation work has commenced with Cajun's piling team onsite (7 workers, 122 project hours), currently installing test piles with results expected February 13th. Design coordination is progressing well with teams actively resolving scope gaps and clashes, while procurement is 85% complete with buyout nearing closure. Two high-priority risks require immediate attention: Vertiv LLE delivery schedule confirmation needed by February 13th, and IFC design package completion by April 2026 requiring additional resources and strategic early releases. Weather conditions have caused minor delays (+2 days on test piles) but the overall project remains on schedule with no safety incidents or quality issues reported.
                 </div>
 
-                <h4 style="font-size:0.9rem;color:#a78bfa;margin:20px 0 12px;font-weight:600;">Week in Review — Highlights & Wins</h4>
+                <h4 style="font-size:0.9rem;color:#6a9bcc;margin:20px 0 12px;font-weight:600;">Week in Review — Highlights & Wins</h4>
                 <ul class="report-list">
                     <li>Kickoff meeting completed — project teams met, deliverables and expectations shared</li>
                     <li>Design teams began resolving potential scope gaps and design clashes</li>
@@ -938,7 +958,7 @@
             <!-- EFA / RFS Table -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">E</div>
+                    <div class="section-icon" style="background:rgba(106,155,204,0.15);color:#6a9bcc;">E</div>
                     Best Estimate — Early Floor Access &amp; Ready for Service
                 </div>
                 <div style="overflow-x:auto;">
@@ -967,13 +987,13 @@
             <!-- 2. Safety -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(34,197,94,0.15);color:#4ade80;">2</div>
+                    <div class="section-icon" style="background:rgba(120,140,93,0.15);color:#92a878;">2</div>
                     Safety
                 </div>
                 <div class="report-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                     <div class="report-stat-card">
                         <div class="stat-label">Recordables</div>
-                        <div class="stat-value" style="color:#4ade80">None</div>
+                        <div class="stat-value" style="color:#92a878">None</div>
                     </div>
                     <div class="report-stat-card">
                         <div class="stat-label">Project Hours</div>
@@ -995,19 +1015,19 @@
             <!-- 3. Design -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">3</div>
+                    <div class="section-icon" style="background:rgba(106,155,204,0.15);color:#6a9bcc;">3</div>
                     Design
                 </div>
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px;font-weight:600;">STATUS</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin-bottom:10px;font-weight:600;">STATUS</h4>
                 <p style="font-size:0.9rem;color:#cbd5e1;margin-bottom:16px;line-height:1.6;">DD phase with strategic release of current work for foundations, structural slab on grade, and steel.</p>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:16px 0 10px;font-weight:600;">UPCOMING DELIVERABLES</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:16px 0 10px;font-weight:600;">UPCOMING DELIVERABLES</h4>
                 <ul class="report-list">
                     <li>Jacobs to submit revised mechanical and electrical designs — Due 02/16/26</li>
                     <li>HUT8, Jacobs, and FS to coordinate in-person design meeting in Austin, TX</li>
                 </ul>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:16px 0 10px;font-weight:600;">KEY OPEN RFIs &amp; SUBMITTALS</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:16px 0 10px;font-weight:600;">KEY OPEN RFIs &amp; SUBMITTALS</h4>
                 <ul class="report-list">
                     <li>Vertiv Mechanical submittal (02/02/26) — under review — Bradley Brown (Jacobs)</li>
                     <li>Vertiv Piping submittal (02/02/26) — under review — Bradley Brown (Jacobs)</li>
@@ -1018,11 +1038,11 @@
             <!-- 4. Schedule -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;">4</div>
+                    <div class="section-icon" style="background:rgba(217,119,87,0.15);color:#d97757;">4</div>
                     Schedule
                 </div>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;font-weight:600;">KEY MILESTONES</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin-bottom:12px;font-weight:600;">KEY MILESTONES</h4>
                 <div style="overflow-x:auto;">
                 <table class="report-table">
                     <thead>
@@ -1030,11 +1050,11 @@
                     </thead>
                     <tbody>
                         <tr><td>Mobilization Complete</td><td>1/27/2026</td><td>1/27/2026</td><td>On Time</td><td><span class="report-badge badge-complete">✓ Complete</span></td></tr>
-                        <tr><td>Test Pile Installation</td><td>2/10/2026</td><td>2/12/2026</td><td style="color:#fbbf24">+2 days</td><td><span class="report-badge badge-progress">In Progress</span></td></tr>
+                        <tr><td>Test Pile Installation</td><td>2/10/2026</td><td>2/12/2026</td><td style="color:#d97757">+2 days</td><td><span class="report-badge badge-progress">In Progress</span></td></tr>
                         <tr><td>DD Design Complete</td><td>2/6/2026</td><td>2/6/2026</td><td>On Time</td><td><span class="report-badge badge-complete">✓ Complete</span></td></tr>
                         <tr><td>Foundation IFC Drawings</td><td>3/15/2026</td><td>3/15/2026</td><td>On Track</td><td><span class="report-badge badge-upcoming">Upcoming</span></td></tr>
                         <tr><td>Structural Steel IFC</td><td>3/22/2026</td><td>3/22/2026</td><td>On Track</td><td><span class="report-badge badge-upcoming">Upcoming</span></td></tr>
-                        <tr><td>Full IFC Package</td><td>4/30/2026</td><td>4/30/2026</td><td style="color:#f87171">At Risk</td><td><span class="report-badge badge-risk">Monitoring</span></td></tr>
+                        <tr><td>Full IFC Package</td><td>4/30/2026</td><td>4/30/2026</td><td style="color:#e06050">At Risk</td><td><span class="report-badge badge-risk">Monitoring</span></td></tr>
                         <tr><td>Building Foundation</td><td>6/15/2026</td><td>TBD</td><td>TBD</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
                         <tr><td>Data Hall 1 EFA</td><td>9/30/2026</td><td>9/30/2026</td><td>On Track</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
                         <tr><td>Data Hall 1 RFS</td><td>12/15/2026</td><td>12/15/2026</td><td>On Track</td><td><span class="report-badge badge-planning">Planning</span></td></tr>
@@ -1042,7 +1062,7 @@
                 </table>
                 </div>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:24px 0 12px;font-weight:600;">3-WEEK LOOKAHEAD</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:24px 0 12px;font-weight:600;">3-WEEK LOOKAHEAD</h4>
 
                 <div class="lookahead-week">
                     <h4>Week 1: February 7–13, 2026</h4>
@@ -1068,7 +1088,7 @@
                         <ul>
                             <li>Finalize remaining buyout packages (structural steel, precast panels)</li>
                             <li>Track Vertiv LLE delivery commitment</li>
-                            <li><strong style="color:#fbbf24;">Key Deliverable:</strong> Test pile results expected 02/13</li>
+                            <li><strong style="color:#d97757;">Key Deliverable:</strong> Test pile results expected 02/13</li>
                         </ul>
                     </div>
                 </div>
@@ -1128,7 +1148,7 @@
                     </div>
                 </div>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:24px 0 12px;font-weight:600;">ACCELERATION STRATEGIES</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:24px 0 12px;font-weight:600;">ACCELERATION STRATEGIES</h4>
                 <div class="report-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
                     <div class="accel-card">
                         <div class="accel-num">1</div>
@@ -1152,11 +1172,11 @@
             <!-- 5. Quality & Commissioning -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(236,72,153,0.15);color:#f472b6;">5</div>
+                    <div class="section-icon" style="background:rgba(217,119,87,0.12);color:#e8a87c;">5</div>
                     Quality &amp; Commissioning
                 </div>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px;font-weight:600;">QUALITY ACTIVITIES THIS WEEK</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin-bottom:10px;font-weight:600;">QUALITY ACTIVITIES THIS WEEK</h4>
                 <ul class="report-list">
                     <li>Conducted pre-construction quality meeting with Cajun piling subcontractor</li>
                     <li>Reviewed and approved pile installation work plan and QC procedures</li>
@@ -1166,7 +1186,7 @@
                     <li>No quality incidents reported</li>
                 </ul>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 12px;font-weight:600;">QA/QC METRICS</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:20px 0 12px;font-weight:600;">QA/QC METRICS</h4>
                 <div class="report-kpi-row">
                     <div class="report-kpi">
                         <div class="kpi-value">3 / 3</div>
@@ -1181,12 +1201,12 @@
                         <div class="kpi-label">Submittals Received</div>
                     </div>
                     <div class="report-kpi">
-                        <div class="kpi-value" style="color:#fbbf24">0</div>
+                        <div class="kpi-value" style="color:#d97757">0</div>
                         <div class="kpi-label">Submittals Approved</div>
                     </div>
                 </div>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;font-weight:600;">COMMISSIONING PLANNING</h4>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:20px 0 10px;font-weight:600;">COMMISSIONING PLANNING</h4>
                 <ul class="report-list">
                     <li>Commissioning agent contract finalization in progress</li>
                     <li>Preliminary commissioning plan development initiated</li>
@@ -1194,14 +1214,14 @@
                     <li>Reviewing owner's equipment testing and acceptance criteria</li>
                 </ul>
 
-                <h4 style="font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;font-weight:600;">DEFICIENCIES / NON-CONFORMANCES</h4>
-                <p style="font-size:0.9rem;color:#4ade80;">None reported.</p>
+                <h4 style="font-size:0.85rem;color:#b0aea5;margin:20px 0 10px;font-weight:600;">DEFICIENCIES / NON-CONFORMANCES</h4>
+                <p style="font-size:0.9rem;color:#92a878;">None reported.</p>
             </div>
 
             <!-- 6. Risks and Issues -->
             <div class="report-section">
                 <div class="report-section-title">
-                    <div class="section-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">6</div>
+                    <div class="section-icon" style="background:rgba(192,57,43,0.15);color:#e06050;">6</div>
                     Major Risks &amp; Issues
                 </div>
                 <div style="overflow-x:auto;">
@@ -1673,7 +1693,7 @@
                     tooltip.querySelector('.tooltip-content').innerHTML =
                         '<div style="font-size:1.1rem;font-weight:700;margin-bottom:4px" class="' + pc + '">' + pct + '% Complete</div>' +
                         '<div class="tooltip-row"><span class="tooltip-label">Status:</span><span>' + gpl(pct) + '</span></div>' +
-                        '<div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;margin:8px 0;overflow:hidden">' +
+                        '<div style="height:8px;background:rgba(176,174,165,0.15);border-radius:4px;margin:8px 0;overflow:hidden">' +
                         '<div style="height:100%;width:' + pct + '%;border-radius:4px" class="progress-fill-' + pc + '"></div></div>' +
                         '<div class="tooltip-row"><span class="tooltip-label">Start:</span><span>' + fmt(sd) + '</span></div>' +
                         '<div class="tooltip-row"><span class="tooltip-label">End:</span><span>' + fmt(ed) + '</span></div>' +
